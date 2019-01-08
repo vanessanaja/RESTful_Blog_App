@@ -22,7 +22,17 @@ const Blog = mongoose.model("Blog", blogSchema);
 //RESTFul Routes
 
 app.get("/blogs", function(req, res){
-        res.render("index.ejs");
+        Blog.find({}, function(err, blogs){
+            if(err){
+                console.log(err);
+            } else {
+                res.render("index.ejs", {blogs: blogs});
+            }
+        });
+});
+
+app.get("/", function(req, res){
+    res.redirect("/blogs");
 });
 
 app.listen(process.env.PORT, process.env.IP, function(){
