@@ -55,16 +55,9 @@ app.post("/blogs", function(req, res){
     });
 });
 
-app.post('/', function(req, res, next) {
-  // replace an HTTP posted body property with the sanitized string
-  req.body.sanitized = req.sanitize(req.body.blog);
-  // send the response
-  res.send('Your value was sanitized to: ' + req.body.sanitized);
-});
-
-// router.post('/', function(req, res, next) {
+// app.post('/', function(req, res, next) {
 //   // replace an HTTP posted body property with the sanitized string
-//   req.body.sanitized = req.sanitize(req.body.propertyToSanitize);
+//   req.body.sanitized = req.sanitize(req.body.blog);
 //   // send the response
 //   res.send('Your value was sanitized to: ' + req.body.sanitized);
 // });
@@ -93,6 +86,7 @@ app.get("/blogs/:id/edit", function(req, res){
 //UPDATE Route
 
 app.put("/blogs/:id", function(req, res){
+    req.body.blog.body = req.sanitize(req.body.blog.body)
     Blog.findByIdAndUpdate(req.params.id, req.body.blog, function(err,updatedBlog){
         if(err){
             res.redirect("/blogs");
