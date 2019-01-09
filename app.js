@@ -1,13 +1,15 @@
 const express    = require("express"),
       app        = express(),
       bodyParser = require("body-parser"),
-      mongoose    = require("mongoose");
+      mongoose    = require("mongoose"),
+      expressSanitizer = require('express-sanitizer');
       
 //App Config
 mongoose.connect("mongodb://localhost/restful_blog_app", { useNewUrlParser: true });
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(expressSanitizer()); 
 
 //Mongoose/Model Config
 const blogSchema = new mongoose.Schema({
@@ -40,6 +42,7 @@ app.get("/blogs/new", function(req, res){
 });
 
 app.post("/blogs", function(req, res){
+    req.body.blog.body = req.sanitize(req.body.blog.body)
     Blog.create(req.body.blog, function(err, newBlog){
        if(err){
            alert("something went wrong, please try again");
@@ -49,6 +52,20 @@ app.post("/blogs", function(req, res){
        }
     });
 });
+
+app.post('/', function(req, res, next) {
+  // replace an HTTP posted body property with the sanitized string
+  req.body.sanitized = req.sanitize(req.body.blog);
+  // send the response
+  res.send('Your value was sanitized to: ' + req.body.sanitized);
+});
+
+// router.post('/', function(req, res, next) {
+//   // replace an HTTP posted body property with the sanitized string
+//   req.body.sanitized = req.sanitize(req.body.propertyToSanitize);
+//   // send the response
+//   res.send('Your value was sanitized to: ' + req.body.sanitized);
+// });
 
 app.get("/blogs/:id", function(req, res){
    Blog.findById(req.params.id, function(err, foundBlog){
