@@ -55,13 +55,6 @@ app.post("/blogs", function(req, res){
     });
 });
 
-// app.post('/', function(req, res, next) {
-//   // replace an HTTP posted body property with the sanitized string
-//   req.body.sanitized = req.sanitize(req.body.blog);
-//   // send the response
-//   res.send('Your value was sanitized to: ' + req.body.sanitized);
-// });
-
 app.get("/blogs/:id", function(req, res){
    Blog.findById(req.params.id, function(err, foundBlog){
        if(err){
@@ -92,6 +85,18 @@ app.put("/blogs/:id", function(req, res){
             res.redirect("/blogs");
         } else {
             res.redirect("/blogs/" + req.params.id);
+        }
+    })
+});
+
+//DELETE Route
+app.delete("/blogs/:id", function(req, res){
+    Blog.findByIdAndRemove(req.params.id, req.body.blog, function(err){
+        if(err){
+            alert("There was an error")
+            res.redirect("/blogs");
+        } else {
+           res.redirect("/blogs"); 
         }
     })
 });
